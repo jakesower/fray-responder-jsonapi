@@ -1,0 +1,4 @@
+en:
+  errors:
+    is_hash?: "must be a hash"
+    matches_schema?: "does not match schema"

@@ -2,7 +2,7 @@ shared_context 'care_bear_schema' do
   let(:care_bear_schema) {
     { 'bears' => {
         'resource' => 'bears',
-        'attributes' => ['name', 'bellySymbol', 'furColor'],
+        'attributes' => ['name', 'belly_badge', 'fur_color', 'gender'],
         'relationships' => {
           'one' => ['home'],
           'many' => ['powers']
@@ -10,7 +10,7 @@ shared_context 'care_bear_schema' do
       },
       'homes' => {
         'resource' => 'homes',
-        'attributes' => ['name', 'location', 'caringMeter'],
+        'attributes' => ['name', 'location', 'caring_meter'],
         'readonly_attributes' => [],
         'relationships' => {
           'one' => [],
