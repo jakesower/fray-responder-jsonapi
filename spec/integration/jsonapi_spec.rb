@@ -1,3 +1,5 @@
+require 'json'
+
 RSpec.describe Fray::Responder::Jsonapi do
   include_context 'care_bear_schema'
 
@@ -9,17 +11,19 @@ RSpec.describe Fray::Responder::Jsonapi do
     let(:dataset) {
       Fray::Data::Dataset.new(
         resource_type: 'bears',
-        resources: []
+        resources: [],
+        related: nil,
+        meta: nil
       )
     }
 
     it 'responds with an empty jsonapi response' do
       result = responder.(dataset)
-      expect(result).to eq({
-        'data' => []
-      })
-    end
+      expect(result).to be_instance_of(Fray::Data::Response)
 
+      body = JSON.parse(result.body)
+      expect(body['data']).to eq([])
+    end
   end
 
 
@@ -48,14 +52,14 @@ RSpec.describe Fray::Responder::Jsonapi do
                 'location' => {"latitude"=>39.097579, "longitude"=>-77.228504},
                 "caringMeter" => 0.99 },
               relationships: {
-                'bears' => [ '1', '2', '3' ]}}},
+                'bears' => ['1', '2', '3']}}},
           'powers' => {
             '1' => {
               attributes: {
                 'name' => 'Care Bear Stare',
                 'description' => 'Powerful attack with a caring beam.'},
               relationships: {
-                'bears' => [ '1', '2', '3' ]}},
+                'bears' => ['1', '2', '3']}},
             '2' => {
               attributes: {
                 'name' => 'Magic Mirror',
@@ -64,6 +68,30 @@ RSpec.describe Fray::Responder::Jsonapi do
       )
     }
 
+    let(:result) {
+      responder.(dataset)
+    }
+
+    it "creates a Fray::Data::Response" do
+      expect(result).to be_instance_of(Fray::Data::Response)
+    end
+
+    it "returns a 200 code" do
+      expect(result.code).to eq('200')
+    end
+
+    it "properly formats the body of the response" do
+      body = JSON.parse(result.body)
+      expect(body['data']).to eq([
+        { "type" => "bears",
+          "id" => "1",
+          "attributes" => {
+            'name' => 'Tenderheart',
+            'gender' => 'male',
+            'belly_badge' => 'heart',
+            'fur_color' => 'tan' }}]
+      )
+    end
   end
 
 end

@@ -6,9 +6,11 @@ module Fray::Responder::Jsonapi
 
 
     def call(dataset)
-      {
-        'data' => []
-      }
+      Fray::Data::Response.new(
+        code: 200,
+        headers: {},
+        body: JSON.generate({ 'data' => [] })
+      )
     end
   end
 end
