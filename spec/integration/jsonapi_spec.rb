@@ -1,4 +1,5 @@
 require 'json'
+require 'json-schema'
 
 RSpec.describe Fray::Responder::Jsonapi do
   include_context 'care_bear_schema'
@@ -12,8 +13,8 @@ RSpec.describe Fray::Responder::Jsonapi do
       Fray::Data::Dataset.new(
         resource_type: 'bears',
         resources: [],
-        related: nil,
-        meta: nil
+        related: {},
+        meta: {}
       )
     }
 
@@ -63,7 +64,8 @@ RSpec.describe Fray::Responder::Jsonapi do
             '2' => {
               attributes: {
                 'name' => 'Magic Mirror',
-                'description' => 'Spy on others, cast spells, check hair.'}}}},
+                'description' => 'Spy on others, cast spells, check hair.'},
+              relationships: {}}}},
         meta: {}
       )
     }
@@ -80,17 +82,32 @@ RSpec.describe Fray::Responder::Jsonapi do
       expect(result.code).to eq('200')
     end
 
-    it "properly formats the body of the response" do
+    it "returns the proper json api content type" do
+      expect(result.headers['Content-Type']).to eq('application/vnd.api+json')
+    end
+
+    it "conforms to the jsonapi schema" do
+      expect(JSON.parse(result.body)).to match_schema(:jsonapi)
+    end
+
+    it "contains the correct data" do
       body = JSON.parse(result.body)
-      expect(body['data']).to eq([
-        { "type" => "bears",
-          "id" => "1",
-          "attributes" => {
-            'name' => 'Tenderheart',
-            'gender' => 'male',
-            'belly_badge' => 'heart',
-            'fur_color' => 'tan' }}]
-      )
+      data = body['data'].first
+
+      expect(data['id']).to eq('1')
+      expect(data['type']).to eq('bears')
+      expect(data['attributes']).to eq({
+        'name' => 'Tenderheart',
+        'gender' => 'male',
+        'belly_badge' => 'heart',
+        'fur_color' => 'tan' })
+    end
+
+    it "properly formats related resources" do
+      body = JSON.parse(result.body)
+      related = body['data'].first
+
+
     end
   end
 
