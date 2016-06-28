@@ -1,13 +1,12 @@
 require 'fray'
-
+require 'fray/responder/jsonapi/dataset_handler'
+require 'fray/responder/jsonapi/error_handler'
 require 'fray/responder/jsonapi/base'
-
-# require 'fray/responder/jsonapi/data_structures/root'
 
 module Fray::Responder
   module Jsonapi
-    def self.build(schema)
-      Base.new(schema)
+    def self.build(schema, request)
+      Base.new(schema, request)
     end
   end
 end
