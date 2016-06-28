@@ -25,8 +25,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "fray", "~> 0.0"
-  # spec.add_dependency "dry-types"
-  spec.add_dependency "dry-validation"
   spec.add_dependency "json-schema"
 
   spec.add_development_dependency "bundler", "~> 1.12"
